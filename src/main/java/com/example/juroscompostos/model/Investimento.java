@@ -1,9 +1,6 @@
 package com.example.juroscompostos.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,5 +16,8 @@ public class Investimento {
 
     private Double capitalInicial;
     private Double taxaJuros; //em decimal (ex: 0.05 para 5%)
-    private Integer tempo; //número de períodos (meses ou anos)
+    private Integer tempo; //número de períodos (meses ou anos)]
+
+    @Enumerated(EnumType.STRING)
+    private PeriodoTempo unidadeTempo;
 }

@@ -1,6 +1,7 @@
 package com.example.juroscompostos.service;
 
 import com.example.juroscompostos.model.Investimento;
+import com.example.juroscompostos.model.PeriodoTempo;
 import com.example.juroscompostos.model.ResultadoJuros;
 import com.example.juroscompostos.repository.InvestimentoRepository;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,18 @@ public class JurosService {
 
     // Fórmula: M = C * (1 + i)^t
     public ResultadoJuros calcular(Investimento investimento) {
-        double montante = investimento.getCapitalInicial() *
-                Math.pow(1 + investimento.getTaxaJuros(), investimento.getTempo());
+        double montante;
+        double juros;
 
-        double juros = montante - investimento.getCapitalInicial();
+        if (investimento.getUnidadeTempo() == PeriodoTempo.MES) {
+            montante = investimento.getCapitalInicial() *
+                    Math.pow(1 + investimento.getTaxaJuros(), investimento.getTempo());
+        } else {
+            montante = investimento.getCapitalInicial() *
+                    Math.pow(1 + investimento.getTaxaJuros(), investimento.getTempo());
+        }
+
+        juros = montante - investimento.getCapitalInicial();
 
         // salvar no banco
         repository.save(investimento);
