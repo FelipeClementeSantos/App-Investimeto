@@ -1,17 +1,20 @@
 package com.example.juroscompostos.service;
 
 import com.example.juroscompostos.model.Investimento;
-import com.example.juroscompostos.model.PeriodoTempo;
 import com.example.juroscompostos.model.ResultadoJuros;
 import com.example.juroscompostos.repository.InvestimentoRepository;
 import org.springframework.stereotype.Service;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class JurosService {
 
     private final InvestimentoRepository repository;
+    private final NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+    private final NumberFormat percentFormat = NumberFormat.getPercentInstance(new Locale("pt", "BR"));
 
     public JurosService(InvestimentoRepository repository) {
         this.repository = repository;
@@ -35,13 +38,17 @@ public class JurosService {
         double montanteFinal = montanteCapital + montanteAportes;
         double totalInvestido = capitalInicial + (aporteMensal * tempo);
         double juros = montanteFinal - totalInvestido;
-        double retornoPercentual = (juros / totalInvestido) * 100;
+        double retornoPercentual = (juros / totalInvestido);
 
         repository.save(investimento);
 
-        return new ResultadoJuros(montanteFinal, juros, retornoPercentual, totalInvestido);
+        return new ResultadoJuros(
+                currencyFormat.format(montanteFinal),
+                currencyFormat.format(juros),
+                percentFormat.format(retornoPercentual),
+                currencyFormat.format(totalInvestido)
+        );
     }
-
 
     // Listar todos os investimentos já salvos
     public List<Investimento> listarInvestimentos() {
