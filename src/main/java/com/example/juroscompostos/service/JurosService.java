@@ -19,23 +19,31 @@ public class JurosService {
 
     // Fórmula: M = C * (1 + i)^t
     public ResultadoJuros calcular(Investimento investimento) {
-        double montante;
-        double juros;
+        double capitalInicial = investimento.getCapitalInicial();
+        double taxa = investimento.getTaxaJuros();
+        int tempo = investimento.getTempo();
+        double aporteMensal = investimento.getAporteMensal() != null ? investimento.getAporteMensal() : 0.0;
 
-        if (investimento.getUnidadeTempo() == PeriodoTempo.MES) {
-            montante = investimento.getCapitalInicial() *
-                    Math.pow(1 + investimento.getTaxaJuros(), investimento.getTempo());
-        } else {
-            montante = investimento.getCapitalInicial() *
-                    Math.pow(1 + investimento.getTaxaJuros(), investimento.getTempo());
+        if (investimento.getUnidadeTempo() == PeriodoTempo.ANO) {
+
+        }else {
+
         }
 
-        juros = montante - investimento.getCapitalInicial();
+        double montanteCapital = capitalInicial * Math.pow(1 + taxa, tempo);
+
+        double montanteAportes = 0.0;
+        if (aporteMensal > 0) {
+            montanteAportes = aporteMensal * ((Math.pow(1 + taxa, tempo) -1 ) / taxa);
+        }
+
+        double montanteFinal = montanteCapital + montanteAportes;
+        double juros = montanteFinal - (capitalInicial + (aporteMensal * tempo));//
 
         // salvar no banco
         repository.save(investimento);
 
-        return new ResultadoJuros(montante, juros);
+        return new ResultadoJuros(montanteFinal, juros);
     }
 
     // Listar todos os investimentos já salvos
